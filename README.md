@@ -147,6 +147,16 @@ Hash Table (size=8)
 * **Purpose**: Analyze quicksort performance across different array sizes
 * **Returns**: List of performance metrics for each array size
 
+##### 5. `deterministic_quicksort(arr)`
+
+* **Purpose**: Sort array using deterministic quicksort (first element as pivot)
+* **Parameters**: `arr` (list) - Input array to be sorted
+* **Returns**: `list` - New array sorted in ascending order
+* **Time Complexity**: 
+  - Average: O(n log n)
+  - Worst: O(n²) - occurs on sorted/reverse-sorted arrays
+* **Note**: Included for empirical comparison with randomized version
+
 #### Algorithm Logic
 
 **Why Randomization?**
@@ -388,6 +398,20 @@ python3 run_tests.py --negative
 python3 -m unittest discover tests -v
 ```
 
+#### Run Empirical Comparison
+
+**Generate Comparison Plots:**
+```bash
+python3 -m src.generate_plots
+```
+
+**Run Comparison Analysis:**
+```bash
+python3 -m src.quicksort_comparison
+```
+
+Both commands will generate detailed performance data and visualizations comparing Randomized vs Deterministic Quicksort.
+
 ## Test Cases
 
 ### Randomized Quicksort Tests
@@ -415,6 +439,29 @@ The test suite includes comprehensive test cases covering:
 * Performance analysis across different array sizes
 * Timing measurements
 
+### Deterministic Quicksort Tests
+
+The test suite includes comprehensive test cases covering:
+
+#### ✅ **Functional Tests**
+
+* All same scenarios as randomized quicksort
+* Worst-case performance on sorted/reverse-sorted arrays
+* Correctness verification
+
+#### ✅ **Comparison Tests**
+
+* Direct comparison between randomized and deterministic quicksort
+* Verification that both produce identical results
+* Performance consistency tests
+
+#### ✅ **Edge Cases**
+
+* Zero elements, single element, two elements
+* All zeros, mixed positive/negative numbers
+* Large value ranges
+* Worst-case scenarios for deterministic quicksort
+
 ### Hash Table Tests
 
 The test suite includes comprehensive test cases covering:
@@ -441,13 +488,41 @@ The test suite includes comprehensive test cases covering:
 * All keys hash to same bucket
 * Load factor threshold triggering resize
 
+## Empirical Comparison Study
+
+### Randomized vs Deterministic Quicksort
+
+This project includes a comprehensive empirical comparison study comparing Randomized Quicksort with Deterministic Quicksort (using first element as pivot) across different input sizes and distributions.
+
+**Documentation**: See [`QUICKSORT_COMPARISON.md`](QUICKSORT_COMPARISON.md) for detailed analysis and results.
+
+**Visualizations**: Three comprehensive plots are included:
+- `quicksort_comparison_plots.png` - Overview comparison across all distributions
+- `quicksort_comparison_detailed.png` - Detailed views for each distribution type
+- `quicksort_speedup_comparison.png` - Speedup ratios visualization
+
+**Key Findings**:
+- **Random Arrays**: Both algorithms perform similarly (~10-15% difference)
+- **Sorted Arrays**: Deterministic degrades to O(n²); Randomized maintains O(n log n) - up to **475x speedup**
+- **Reverse-Sorted Arrays**: Even worse degradation for deterministic - up to **857x speedup** for randomized
+- **Repeated Elements**: Similar performance for both algorithms
+
+**Running the Comparison**:
+```bash
+# Generate plots and detailed comparison
+python3 -m src.generate_plots
+python3 -m src.quicksort_comparison
+```
+
 ## Project Structure
 
 ```
 MSCS532_Assignment3/
 ├── src/
 │   ├── __init__.py                # Package initialization
-│   ├── quicksort.py              # Randomized Quicksort implementation
+│   ├── quicksort.py              # Randomized & Deterministic Quicksort implementations
+│   ├── quicksort_comparison.py   # Empirical comparison script
+│   ├── generate_plots.py         # Plot generation script
 │   ├── hash_table.py             # Hash Table with Chaining implementation
 │   └── examples.py               # Example usage demonstrations
 ├── tests/
@@ -456,6 +531,10 @@ MSCS532_Assignment3/
 │   └── test_hash_table.py        # Comprehensive hash table tests
 ├── run_tests.py                  # Test runner with various options
 ├── README.md                     # This documentation
+├── QUICKSORT_COMPARISON.md       # Empirical comparison documentation
+├── quicksort_comparison_plots.png       # Overview comparison plots
+├── quicksort_comparison_detailed.png    # Detailed distribution plots
+├── quicksort_speedup_comparison.png     # Speedup ratio plots
 ├── LICENSE                       # MIT License
 ├── .gitignore                    # Git ignore file
 └── requirements.txt              # Python dependencies (none required)
@@ -465,7 +544,7 @@ MSCS532_Assignment3/
 
 ### Test Coverage
 
-The project includes **30+ comprehensive test cases** covering:
+The project includes **41+ comprehensive test cases** covering:
 
 #### ✅ **Functional Tests**
 
@@ -539,6 +618,24 @@ This implementation serves as an excellent learning resource for:
 - Faster than O(n²) algorithms (bubble, insertion, selection sort)
 - Comparable to merge sort but with better space efficiency
 - Generally slower than Python's built-in Timsort (optimized hybrid)
+
+### Empirical Comparison Results
+
+**Randomized vs Deterministic Quicksort:**
+
+The project includes comprehensive empirical analysis comparing Randomized Quicksort with Deterministic Quicksort (first element as pivot). Results demonstrate:
+
+1. **On Random Arrays**: Deterministic is ~10-15% faster (minimal overhead from randomization)
+2. **On Sorted Arrays**: Randomized is **up to 475x faster** (deterministic shows O(n²) worst-case)
+3. **On Reverse-Sorted Arrays**: Randomized is **up to 857x faster** (even worse degradation for deterministic)
+4. **On Repeated Elements**: Both perform similarly (~5% difference)
+
+**Visual Evidence**: The included plots (`quicksort_comparison_*.png`) clearly show:
+- Exponential degradation curves for deterministic quicksort on worst-case inputs
+- Consistent O(n log n) performance for randomized quicksort across all distributions
+- Minimal overhead of randomization on random inputs
+
+See [`QUICKSORT_COMPARISON.md`](QUICKSORT_COMPARISON.md) for detailed analysis, tables, and conclusions.
 
 ### Hash Table with Chaining
 

@@ -8,6 +8,7 @@ along with utilities for performance analysis and comparison.
 import random
 from typing import List, Callable, Tuple
 import time
+import sys
 
 
 def randomized_quicksort(arr: List[int], low: int = None, high: int = None) -> List[int]:
@@ -149,6 +150,80 @@ def compare_with_builtin(arr: List[int]) -> dict:
         'is_correct': is_correct,
         'array_length': len(arr)
     }
+
+
+def deterministic_quicksort(arr: List[int], low: int = None, high: int = None) -> List[int]:
+    """
+    Sort an array using deterministic quicksort algorithm (first element as pivot).
+    
+    Time Complexity:
+        - Average: O(n log n)
+        - Worst: O(n²) - occurs when array is sorted or reverse sorted
+        - Best: O(n log n)
+    
+    Space Complexity: O(log n) average case, O(n) worst case due to recursion stack
+    
+    Args:
+        arr: List of integers to sort
+        low: Starting index (default: 0)
+        high: Ending index (default: len(arr) - 1)
+    
+    Returns:
+        Sorted list of integers
+    """
+    if low is None:
+        low = 0
+    if high is None:
+        high = len(arr) - 1
+    
+    # Create a copy to avoid mutating the original array
+    arr = arr.copy()
+    
+    # Increase recursion limit for worst-case scenarios
+    original_limit = sys.getrecursionlimit()
+    max_required = len(arr) * 2 + 1000
+    if max_required > original_limit:
+        sys.setrecursionlimit(max_required)
+    
+    try:
+        def _quicksort(arr: List[int], low: int, high: int) -> None:
+            """Internal recursive quicksort function."""
+            if low < high:
+                # Partition the array and get pivot index
+                pivot_idx = deterministic_partition(arr, low, high)
+                
+                # Recursively sort elements before and after partition
+                _quicksort(arr, low, pivot_idx - 1)
+                _quicksort(arr, pivot_idx + 1, high)
+        
+        _quicksort(arr, low, high)
+    finally:
+        # Restore original recursion limit
+        sys.setrecursionlimit(original_limit)
+    
+    return arr
+
+
+def deterministic_partition(arr: List[int], low: int, high: int) -> int:
+    """
+    Partition the array using the first element as pivot.
+    
+    This deterministic approach can lead to O(n²) worst-case performance
+    when the array is already sorted or reverse sorted.
+    
+    Args:
+        arr: List to partition
+        low: Starting index
+        high: Ending index
+    
+    Returns:
+        Final position of pivot element
+    """
+    # Use first element as pivot (swap with last element for partition)
+    arr[low], arr[high] = arr[high], arr[low]
+    
+    # Use standard partition with pivot at high
+    return partition(arr, low, high)
 
 
 def analyze_performance(array_sizes: List[int] = None) -> List[dict]:
