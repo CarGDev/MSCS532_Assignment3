@@ -1,0 +1,3 @@
+# Requirements for MSCS532 Assignment 3
+# No external dependencies required - uses only Python standard library
+
