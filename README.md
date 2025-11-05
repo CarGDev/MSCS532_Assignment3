@@ -682,6 +682,9 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Author
 
+**Carlos Gutierrez**  
+Email: cgutierrez44833@ucumberlands.edu
+
 Created for MSCS532 Assignment 3: Understanding Algorithm Efficiency and Scalability
 
 ## Acknowledgments
